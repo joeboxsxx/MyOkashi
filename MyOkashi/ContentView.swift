@@ -12,6 +12,8 @@ struct ContentView: View {
     @StateObject var okashiDataList = OkashiData()
     // 入力された文字列を保持する状態変数
     @State var inputText = ""
+    // SafariViewの表示有無を管理する変数
+    @State var showSafari = false
     
     var body: some View {
         VStack {
@@ -31,23 +33,36 @@ struct ContentView: View {
             // リスト表示する
             List(okashiDataList.okashiList) { okashi in
                 // 1つ1つ要素を取り出す
-                // Listの表示内容を生成する
-                HStack {
-                    // 画像を読み込み、表示する
-                    AsyncImage(url: okashi.image) { image in
-                        // 画像を表示する
-                        image
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 40)
-                    } placeholder: {
-                        // 読み込み中はインジケーターを表示する
-                        ProgressView()
-                    }
-                    
-                    Text(okashi.name)
-                } // end HStack
+                Button {
+                    // 選択したリンクを保存する
+                    okashiDataList.okashiLink = okashi.link
+                    // SafariViewを表示する
+                    showSafari.toggle()
+                } label: {
+                    // Listの表示内容を生成する
+                    HStack {
+                        // 画像を読み込み、表示する
+                        AsyncImage(url: okashi.image) { image in
+                            // 画像を表示する
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 40)
+                        } placeholder: {
+                            // 読み込み中はインジケーターを表示する
+                            ProgressView()
+                        }
+                        
+                        Text(okashi.name)
+                    } // end HStack
+                } // end Button
             } // end List
+            .sheet(isPresented: $showSafari, content: {
+                // SafariViewを表示する
+                SafariView(url: okashiDataList.okashiLink!)
+                    // 画面下部がセーフエリアまでいっぱいになるように指定
+                    .ignoresSafeArea(edges: [.bottom])
+            }) // end .sheet
         } // end VStack
     } // end body
 } // end ContentView
