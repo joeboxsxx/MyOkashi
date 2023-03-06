@@ -24,7 +24,16 @@ class OkashiData: ObservableObject {
     
     // 非同期でお菓子データを取得
     private func search(keyword: String) async {
+        // お菓子の検索キーワードをURLエンコードする
+        guard let keyword_encode = keyword.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            return
+        }
+        
+        // リクエストURLの組み立て
+        guard let req_url = URL(string: "https://sysbird.jp/toriko/api/?apikey=guest&keyword=\(keyword_encode)&max=10&order=r") else {
+            return
+        }
         // デバックエリアに出力
-        print("searchメソッドで受け取った値：\(keyword)")
+        print(req_url)
     } // end search
 } // end OkashiData
