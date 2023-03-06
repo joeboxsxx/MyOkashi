@@ -6,7 +6,13 @@
 //
 
 import Foundation
-
+// Identifiableプロトコルを利用して、お菓子の情報をまとめる構造体
+struct OkashiItem: Identifiable {
+    let id = UUID()
+    let name: String
+    let link: URL
+    let image: URL
+}
 // お菓子データ検索用クラス
 class OkashiData: ObservableObject {
     // JSONのデータ構造
@@ -24,6 +30,9 @@ class OkashiData: ObservableObject {
         // 複数要素
         let item: [Item]?
     }
+    
+    // お菓子のリスト(Identifiableプロトコル)
+    @Published var okashiList: [OkashiItem] = []
     
     // Web API検索用メソッド 第一引数：keyword 検索したいキーワード
     func searchOkashi(keyword: String) {
